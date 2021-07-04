@@ -1,0 +1,55 @@
+<snippet>
+	<content><![CDATA[
+struct manacher{
+	string s;
+	vector<int> v;
+	// the total number of palindroms
+	long long sum;
+
+	manacher(string _s){
+		for (auto it : _s){
+			s += '&';
+			s += it;
+		}
+		s += '&';
+		solve();
+	}
+
+	void solve(){
+		int lg = 0, dr = 0, c = 0;
+		v.resize(s.size());
+		for (int i=0;i<s.size();i++){
+			lg = v[c + c - i];
+			while (i - lg - 1 >= 0 && i + lg + 1 < s.size() && s[i - lg - 1] == s[i + lg + 1]) lg++;
+			v[i] = lg;
+			if (i + lg > dr){
+				dr = i + lg;
+				c = i;
+			}
+			if (i % 2) sum += lg / 2 + 1;
+			else sum += (lg + 1) / 2; 
+		}
+	}
+
+	int getMyPos(int x){
+		return x * 2 - 1;
+	}
+
+	int getVal(int x){
+		x = getMyPos(x);
+		return v[x] / 2 + 1;
+	}
+
+	// palindroms of par length
+	int getValPar(int x){
+		x = getMyPos(x) + 1;
+		return (v[x] + 1) / 2;
+	}
+};
+
+]]></content>
+	<!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
+	<tabTrigger>__manacher</tabTrigger>
+	<!-- Optional: Set a scope to limit where the snippet will trigger -->
+	<!-- <scope>source.python</scope> -->
+</snippet>

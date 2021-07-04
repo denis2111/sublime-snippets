@@ -1,0 +1,58 @@
+<snippet>
+	<content><![CDATA[
+#define cd complex<double>
+int rev(int x, int lg){
+  int ans = 0;
+  for (int i=0;i<lg;i++) if (x & (1<<i)) ans += (1<<(lg-i-1));
+  return ans;
+}
+ 
+void FFT(vector<cd> &A, bool inv){
+  int sz = A.size(), lg = 0;
+  while ((1<<lg) < sz) lg++;
+
+  for (int i=0;i<sz;i++) if (i < rev(i,lg)) swap(A[i], A[rev(i,lg)]);
+
+  for (int len=2;len<=sz;len*=2){
+    double ang = 2 * acos(-1) / len * (inv ? -1 : 1);
+    cd d(cos(ang), sin(ang));
+    for (int i=0;i<sz;i+=len){
+      cd w(1,0);
+      for (int j=0;j<len/2;j++){
+        cd u = A[i+j], v = w * A[i+j+len/2];
+        A[i+j] = u + v;
+        A[i+j+len/2] = u - v;
+        w *= d;
+      }
+    }
+  }
+
+  for (int i=0;i<sz && inv;i++) A[i] /= sz;
+}
+ 
+vector<int> mult(vector<int> A, vector<int> B){
+  vector<cd> X, Y, Z;
+  int lg = 1, sz = max(A.size(),B.size());
+  while (lg < sz) lg *= 2;
+  lg *= 2;
+
+  X.resize(lg); Y.resize(lg); Z.resize(lg);
+  for (int i=0;i<A.size();i++) X[i] = {(double)A[i], 0};
+  for (int i=0;i<B.size();i++) Y[i] = {(double)B[i], 0};
+
+  FFT(X,0); FFT(Y, 0);
+  for (int i=0;i<Z.size();i++) Z[i] = X[i] * Y[i];
+  FFT(Z,1);
+
+  vector<int> C;
+  C.resize(A.size() + B.size() - 1);
+  for (int i=0;i<C.size();i++) C[i] = Z[i].real() + 0.5;
+
+  return C;
+}
+]]></content>
+	<!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
+	<tabTrigger>__FFT</tabTrigger>
+	<!-- Optional: Set a scope to limit where the snippet will trigger -->
+	<!-- <scope>source.python</scope> -->
+</snippet>

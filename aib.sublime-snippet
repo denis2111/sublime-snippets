@@ -1,0 +1,53 @@
+<snippet>
+	<content><![CDATA[
+template<typename T = int>
+struct AIB{
+    #define INIT_VALUE (type == 2 ? INF : (type == 1 ? -INF : 0))
+    vector<T> A;
+    int N, type;
+    bool isReversed;
+    const T INF = 1e9;
+    const int OFF = 4;
+ 
+    // type 0 = sum, 1 = max, 2 = min
+    AIB(int _N = Nmax + 5,int _type = 0, bool _isReversed = false) : N(_N), type(_type), isReversed(_isReversed){
+        assert(type >= 0 && type <= 2);
+        A.resize(N+5, INIT_VALUE);
+    }
+ 
+    void operation(T &A, T B){
+        if (type == 0) A += B;
+        else if (type == 1) A = max(A, B);
+        else A = min(A, B);
+    }
+
+    void add(T pos, T val){
+        for (pos=(isReversed ? N-pos-OFF : pos+OFF);pos < N; pos += pos & (-pos))
+            operation(A[pos], val);
+    }
+ 
+    T sum(T pos){
+        T ans = INIT_VALUE;
+        for (pos=(isReversed ? N-pos-OFF : pos+OFF);pos > 0; pos -= pos & (-pos))
+            operation(ans, A[pos]);
+        return ans;
+    }
+ 
+    T sum(T L, T R){
+        return sum(R) - sum(L-1);
+    }
+ 
+    T lowerBound(T val){
+        long long p = 1, st = 0;
+        for (;p<N;p<<=1);
+        for (;p>=1;p>>=1) if (st + p < N && A[st+p] < val) {st += p;val -= A[st];}
+        return st + 1 - OFF;
+    }
+    #undef INIT_VALUE
+};
+AIB<long long> aib(Nmax + 5, false, false);
+
+]]></content>
+	<tabTrigger>__AIB</tabTrigger>
+	<!-- <scope>source.python</scope> -->
+</snippet>

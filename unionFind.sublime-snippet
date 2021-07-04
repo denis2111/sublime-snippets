@@ -1,0 +1,29 @@
+<snippet>
+	<content><![CDATA[
+int T[NMAX];
+void make_forest(int n = NMAX - 1){
+  for (int i=1;i<=n;i++) T[i] = i;
+}
+
+int rad(int x){
+  int rx = x, sav;
+  while (T[rx]!=rx) rx = T[rx];
+  while (T[x] != rx){
+    sav = T[x];
+    T[x] = rx;
+    x = sav;
+  }
+  return rx;
+}
+
+void _union(int x, int y){
+  int rx = rad(x);
+  int ry = rad(y);
+  if (rx != ry) T[rx] = ry;
+}
+]]></content>
+	<!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
+	<tabTrigger>__unionFind</tabTrigger>
+	<!-- Optional: Set a scope to limit where the snippet will trigger -->
+	<!-- <scope>source.python</scope> -->
+</snippet>
