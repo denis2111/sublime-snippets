@@ -1,0 +1,52 @@
+<snippet>
+	<content><![CDATA[
+struct PersistentST {
+	ll s;
+	PersistentST *l, *r;
+
+	PersistentST(ll s = 0) : s(s) { l = r = nullptr; }
+	PersistentST(PersistentST *pst) { s = pst->s; l = pst->l; r = pst->r; }
+
+	ll gets(PersistentST *node) { return node ? node->s : 0; }
+
+	PersistentST* update(int l, int r, int p, ll val) {
+		if(l == r) return new PersistentST(this->s + val);
+
+		int mid = (l + r) / 2;
+		PersistentST *res = new PersistentST(this);
+		if(p <= mid) {
+			if(!res->l) res->l = new PersistentST();
+			res->l = res->l->update(l, mid, p, val);
+		} else {
+			if(!res->r) res->r = new PersistentST();
+			res->r = res->r->update(mid + 1, r, p, val);
+		}
+
+		res->s = gets(res->l) + gets(res->r);
+
+		return res;
+	}
+
+	ll query(int l, int r, int a, int b) {
+		if(a <= l && r <= b) return this->s;
+
+		int mid = (l + r) / 2;
+		ll vl = (this->l && a <= mid ? this->l->query(l, mid, a, b) : 0);
+		ll vr = (this->r && mid + 1 <= b ? this->r->query(mid + 1, r, a, b) : 0);
+
+		return vl + vr;
+	}
+
+	void clear() {
+		if(this->l) this->l->clear();
+		if(this->r) this->r->clear();
+		delete this;
+	}
+};
+
+]]></content>
+	<!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
+	<tabTrigger>__persistent_st</tabTrigger>
+	<!-- Optional: Set a scope to limit where the snippet will trigger -->
+	<!-- <scope>source.python</scope> -->
+</snippet>

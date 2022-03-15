@@ -1,5 +1,6 @@
 <snippet>
 	<content><![CDATA[
+
 long long _pow(long long a, long long b){
   long long ans = 1;
   for (; b; b >>= 1){
@@ -9,26 +10,29 @@ long long _pow(long long a, long long b){
   return ans;
 }
 
-long long P[NMAX], inv[NMAX];
-template<typename T = long long>
-long long comb(long long n, long long m){
-  if (P[1] == 0) cerr << "Apeleaza functia prec!\n";
-  return P[n] * inv[m] % MOD * inv[n-m] % MOD;
-}
-
-void add(long long &a, long long b){
-	a += b;
-	if (a >= MOD) a -= MOD;
-	if (a < 0) a += MOD;
-}
-
+long long P[NMAX + 5], inv[NMAX + 5];
 void prec(int n = NMAX-1){
   P[0] = inv[0] = 1;
   for (int i=1;i<=n;i++){
     P[i] = P[i-1] * i % MOD;
-    inv[i] = _pow(P[i], MOD - 2LL);
   }
+  inv[n] = _pow(P[n], MOD - 2LL);
+  for (int i=n-1;i>=1;i--)
+    inv[i] = inv[i+1] * (i+1) % MOD;
 }
+
+template<typename T = long long>
+long long comb(long long n, long long m){
+  if (P[1] == 0) prec(NMAX);
+  return P[n] * inv[m] % MOD * inv[n-m] % MOD;
+}
+
+void add(long long &a, long long b){
+  a += b;
+  if (a >= MOD) a -= MOD;
+  if (a < 0) a += MOD;
+}
+
 ]]></content>
 	<tabTrigger>__comb</tabTrigger>
 	<!-- <scope>source.python</scope> -->

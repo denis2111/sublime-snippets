@@ -1,0 +1,23 @@
+<snippet>
+	<content><![CDATA[
+int z[N];
+
+void computeZFunction(const string &s) {
+	int n = s.length();
+  for(int i = 0; i < n; ++i) {
+    int l = -1, r = -1;
+    for(int j = i + 1; j < n; ++j) {
+      int k = (j > r ? 0 : min(z[j - l + i], r - j + 1));
+      while(j + k < n && s[i + k] == s[j + k]) ++k;
+      z[j] = k;
+      if(j + k - 1 > r) l = j, r = j + k - 1;
+    }
+  }
+}
+
+]]></content>
+	<!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
+	<tabTrigger>__z_function</tabTrigger>
+	<!-- Optional: Set a scope to limit where the snippet will trigger -->
+	<!-- <scope>source.python</scope> -->
+</snippet>

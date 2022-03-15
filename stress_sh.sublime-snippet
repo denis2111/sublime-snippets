@@ -1,0 +1,52 @@
+<snippet>
+	<content><![CDATA[
+#/bin/bash
+
+unique_output=1
+if [ $# -ge 1 ]; then
+	if [ $1 == '--custom' ] || [ $1 == '-c' ]; then
+		unique_output=0
+	fi
+fi
+	
+i=0
+while true
+do
+	python3 gen.py >in
+	./l <in >out
+	./ll <in >ok
+
+	#if [ $? -ne 0 ]; then
+	#	exit 1
+	#fi
+
+	if [ $unique_output -eq 1 ]; then
+		if ! diff out ok; then
+			echo $?
+			exit 1
+		fi
+	else
+		python3 verif.py in out ok
+		if [ $? -ne 0 ]; then
+		 	echo $?
+		  exit 1
+		fi
+	fi
+
+	#if ((i == 1000)); then
+	#	exit 0
+	#fi
+
+	i=$(( i + 1 ))
+	if ((i % 1 == 0)); then
+		echo $i
+	fi
+done
+
+
+]]></content>
+	<!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
+	<tabTrigger>__stress</tabTrigger>
+	<!-- Optional: Set a scope to limit where the snippet will trigger -->
+	<!-- <scope>source.python</scope> -->
+</snippet>

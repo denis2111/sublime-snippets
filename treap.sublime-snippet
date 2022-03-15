@@ -1,0 +1,90 @@
+<snippet>
+	<content><![CDATA[
+struct Treap {
+	int key, pri, cnt, mn, mx, dmn, dmx, s;
+	Treap *l, *r;
+
+	Treap(int key) : key(key), pri(rand()) {
+		cnt = s = 1;
+		mn = mx = key;
+		dmn = INF;
+		dmx = -1;
+		l = r = nullptr;
+	}
+};
+using PTreap = Treap*;
+
+void update(PTreap node) {
+	node->mn = min(node->key, node->l ? node->l->mn : INF);
+	node->mx = max(node->key, node->r ? node->r->mx : 0);
+	node->s = node->cnt + (node->l ? node->l->s : 0) + (node->r ? node->r->s : 0);
+
+	node->dmn = INF;
+	if(node->l) node->dmn = min({node->dmn, node->l->dmn, node->key - node->l->mx});
+	if(node->r) node->dmn = min({node->dmn, node->r->dmn, node->r->mn - node->key});
+	if(node->cnt >= 2) node->dmn = 0;
+
+	if(node->cnt == 1 && !node->l && !node->r) node->dmx = -1;
+	else node->dmx = node->mx - node->mn;
+}
+
+void split(PTreap node, int key, PTreap &l, PTreap &r) {
+	if(!node) return void(l = r = nullptr);
+
+	if(key < node->key) split(node->l, key, l, node->l), r = node;
+	else split(node->r, key, node->r, r), l = node;
+
+	update(node);
+}
+
+void merge(PTreap &node, PTreap l, PTreap r) {
+	if(!l || !r) return void(node = (l ? l : r));
+
+	if(l->pri < r->pri) merge(r->l, l, r->l), node = r;
+	else merge(l->r, l->r, r), node = l;
+
+	update(node);
+}
+
+bool addIfExists(PTreap node, int key) {
+	if(!node) return false;
+	if(node->key == key) return ++node->cnt, update(node), true;
+
+	auto res = addIfExists(key < node->key ? node->l : node->r, key);
+	update(node);
+	return res;
+}
+
+void add(PTreap &node, PTreap item) {
+	if(!node) return void(node = item);
+
+	if(item->pri > node->pri) split(node, item->key, item->l, item->r), node = item;
+	else add(item->key < node->key ? node->l : node->r, item);
+
+	update(node);
+}
+
+void erase(PTreap &node, int key) {
+	if(!node) return;
+
+	if(node->key == key) {
+		--node->cnt;
+		if(!node->cnt) merge(node, node->l, node->r);
+	} else erase(key < node->key ? node->l : node->r, key);
+
+	if(node) update(node);
+}
+
+void print(PTreap node, string indent = "") {
+	if(!node) return;
+	cout << indent << ' ' << node->key << ' ' << node->cnt << '\n';
+	print(node->l, indent + " ");
+	print(node->r, indent + " ");
+}
+
+]]></content>
+	<!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
+	<tabTrigger>__treap</tabTrigger>
+	<!-- Optional: Set a scope to limit where the snippet will trigger -->
+	<!-- <scope>source.python</scope> -->
+</snippet>
