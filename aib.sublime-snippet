@@ -2,12 +2,16 @@
 	<content><![CDATA[
 template<class T = int>
 struct AIB {
-  vector<T> aib;
+  int n;
+  T* aib;
 
-  AIB(int n) : aib(n + 1) {}
+  AIB(int _n) {
+    aib = new T[_n+1];
+    n = _n + 1;
+  }
 
   void update(int p, T val) {
-    for(; p < aib.size(); p += p & (-p)) aib[p] += val;
+    for(; p < n; p += p & (-p)) aib[p] += val;
   }
 
   T query(int p) {
@@ -16,10 +20,17 @@ struct AIB {
     return res;
   }
 
+  // get sum on interval [l,r]
   T query(int l, int r) {
-    return query(aib, r) - query(aib, l - 1);
+    return query(r) - query(l - 1);
+  }
+
+  void reset() {
+    memset(aib, 0, sizeof(T) * n);
   }
 };
+// AIB<int> aib(n) <--- before c++17 you need to specify the type
+
 
 
 ]]></content>

@@ -1,0 +1,25 @@
+<snippet>
+	<content><![CDATA[
+// must be inserted inside AIB struct
+// search first position k s.t. sum[1,k] = val, return -1 else
+T search(T val) {
+  int step;
+  for (step = 1; step < n; step <<= 1);
+
+  for (int i = 0; step; step >>= 1) {
+    if(i + step <= n) {
+      if (val >= aib[i+step]) {
+        i += step, val -= aib[i];
+        if (!val) return i;
+      }
+    }
+  } 
+
+  return -1;
+}
+]]></content>
+	<!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
+	<tabTrigger>__AIB_extension_prefix_of_sum_k</tabTrigger>
+	<!-- Optional: Set a scope to limit where the snippet will trigger -->
+	<!-- <scope>source.python</scope> -->
+</snippet>
