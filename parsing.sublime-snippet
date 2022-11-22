@@ -1,0 +1,32 @@
+<snippet>
+	<content><![CDATA[
+#define bufferSize 1000000
+int p;
+char buffer[bufferSize+2];
+
+bool digit(int a){return a>='0' && a<='9';}
+
+void read(int &x){
+  x = 0;
+  while (!digit(buffer[p])){
+    p++;
+    if (p>=bufferSize){
+      p = 0;
+      fread(buffer,1,bufferSize,stdin);
+    }
+  }
+  while (digit(buffer[p])){
+    x = x*10+buffer[p]-'0';
+    p++;
+    if (p>=bufferSize){
+      p = 0;
+      fread(buffer,1,bufferSize,stdin);
+    }
+  }
+}
+]]></content>
+	<!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
+	<tabTrigger>__parsing</tabTrigger>
+	<!-- Optional: Set a scope to limit where the snippet will trigger -->
+	<!-- <scope>source.python</scope> -->
+</snippet>

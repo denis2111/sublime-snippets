@@ -1,0 +1,29 @@
+<snippet>
+	<content><![CDATA[
+// Finds x and y s.t. ax + by = d where d is the returned value.
+// If you need ax + by = c and c % d == 0 then x = x * (c/d) and y = y * (c/d)
+// x and y can varry in the following way:
+// x += k * (b/d) where d is gcd(a,b)
+// y -= k * (a/d)
+int gcd_extended(int a,int b,int &x,int &y)
+{
+  if (b==0)
+  {
+    x = 1; y = 0;
+    return a;
+  }
+  else
+  {
+    int x0,y0,d;
+    d = gcd_extended(b,a%b,x0,y0);
+    x = y0;
+    y = x0 - (a/b) * y0;
+    return d;
+  }
+}
+]]></content>
+	<!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
+	<tabTrigger>__gcd_extended</tabTrigger>
+	<!-- Optional: Set a scope to limit where the snippet will trigger -->
+	<!-- <scope>source.python</scope> -->
+</snippet>

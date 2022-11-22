@@ -1,0 +1,34 @@
+<snippet>
+	<content><![CDATA[
+vector<int> prefix(string const &A){
+  vector<int> pr(A.size()+1, 0);
+  int k = 0;
+  
+  for (int i=2;i<=A.size();i++){
+    while (k && A[k] != A[i-1]) k = pr[k];
+    if (A[k] == A[i-1]) k++;
+    pr[i] = k;
+  }
+  return pr;
+}
+
+// return the start for each match of string B in string A
+vector<int> KMP(string const &A, string const &B){
+  vector<int> pr = prefix(B), ans;
+  int k = 0;
+  for (int i=1;i<=A.size();i++){
+    while (k && B[k] != A[i-1]) k = pr[k];
+    if (B[k] == A[i-1]) k++;
+    if (k == B.size()){
+      ans.push_back(i - k);
+    }
+  }
+
+  return ans;
+}
+]]></content>
+	<!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
+	<tabTrigger>__kmp</tabTrigger>
+	<!-- Optional: Set a scope to limit where the snippet will trigger -->
+	<!-- <scope>source.python</scope> -->
+</snippet>
