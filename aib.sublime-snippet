@@ -6,8 +6,9 @@ struct AIB {
   T* aib;
 
   AIB(int _n) {
-    aib = new T[_n+1];
     n = _n + 1;
+    aib = new T[_n+1];
+    memset(aib, 0, sizeof(T) * n);
   }
 
   void update(int p, T val) {
@@ -16,7 +17,9 @@ struct AIB {
 
   T query(int p) {
     T res;
-    for(res = 0; p; p &= p - 1) res += aib[p];
+    for(res = 0; p; p &= p - 1){
+        res += aib[p];
+    }
     return res;
   }
 
